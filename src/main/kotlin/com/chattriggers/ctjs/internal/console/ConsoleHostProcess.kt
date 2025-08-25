@@ -80,20 +80,29 @@ object ConsoleHostProcess : Initializer {
         // then simply placing a breakpoint anywhere in the RemoteConsoleClient class.
 
         val urlObjects = (Thread.currentThread().contextClassLoader.parent as URLClassLoader).urLs
-        val urls = urlObjects.joinToString(File.pathSeparator) {
+        val classpathString = urlObjects.joinToString(File.pathSeparator) {
             val str = if (UDesktop.isWindows) it.toString().replace("file:/", "") else it.toString()
             URLDecoder.decode(str, Charset.defaultCharset())
         }
+
+        val argsFile = File.createTempFile("java_args", ".txt")
+        argsFile.deleteOnExit() 
+
+        argsFile.writeText(
+            """
+            -cp
+            "$classpathString"
+            ${ConsoleClientProcess::class.qualifiedName}
+            ${PORT.toString()}
+            ${ProcessHandle.current().pid().toString()}
+            """.trimIndent()
+        )
 
         process = ProcessBuilder()
             .directory(File("."))
             .command(
                 Path(System.getProperty("java.home"), "bin", "java").toString(),
-                "-cp",
-                urls,
-                ConsoleClientProcess::class.qualifiedName,
-                PORT.toString(),
-                ProcessHandle.current().pid().toString(),
+                "@${argsFile.absolutePath}"
             )
             .start()
 
