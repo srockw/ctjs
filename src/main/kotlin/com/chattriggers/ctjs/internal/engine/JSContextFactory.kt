@@ -20,7 +20,10 @@ object JSContextFactory : ContextFactory() {
     override fun onContextCreated(cx: Context) {
         super.onContextCreated(cx)
 
-        cx.debugOutputPath = File(".", "DEBUG")
+        if (CTJS.isDevelopment) {
+            cx.debugOutputPath = File(".", "DEBUG")
+        }
+
         cx.applicationClassLoader = classLoader
         cx.optimizationLevel = if (optimize) 9 else 0
         cx.languageVersion = Context.VERSION_ES6
