@@ -14,7 +14,7 @@ public class KeyBindsListMixin {
         value = "INVOKE",
         target = "Lorg/apache/commons/lang3/ArrayUtils;clone([Ljava/lang/Object;)[Ljava/lang/Object;")
     )
-    public Object[] addCustomKeyMappings(Object[] original) {
+    private Object[] addCustomKeyMappings(Object[] original) {
         var customKeyMappings = CustomKeyMapping.getKeyMappings();
         if (customKeyMappings.isEmpty()) return original;
 

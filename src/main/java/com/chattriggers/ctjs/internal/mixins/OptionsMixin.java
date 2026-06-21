@@ -10,12 +10,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Options.class)
 public class OptionsMixin {
     @Inject(method = "save", at = @At("RETURN"))
-    public void save(CallbackInfo ci) {
+    private void save(CallbackInfo ci) {
         CustomKeyMapping.INSTANCE.save();
     }
 
     @Inject(method = "load", at = @At("RETURN"))
-    public void load(CallbackInfo ci) {
+    private void load(CallbackInfo ci) {
         CustomKeyMapping.INSTANCE.load();
     }
 }

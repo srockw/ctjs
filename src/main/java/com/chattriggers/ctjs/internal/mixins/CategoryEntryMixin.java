@@ -14,7 +14,7 @@ public class CategoryEntryMixin {
         value = "INVOKE",
         target = "Lnet/minecraft/client/KeyMapping$Category;label()Lnet/minecraft/network/chat/Component;"
     ))
-    public Component replaceCustomCategory(KeyMapping.Category category) {
+    private Component replaceCustomCategory(KeyMapping.Category category) {
         var name = CustomKeyMapping.getCategories().get(category);
         return name == null ? category.label() : Component.literal(name);
     }
