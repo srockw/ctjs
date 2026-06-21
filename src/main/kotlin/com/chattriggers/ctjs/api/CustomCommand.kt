@@ -4,6 +4,7 @@ import com.chattriggers.ctjs.engine.LogType
 import com.chattriggers.ctjs.engine.printToConsole
 import com.chattriggers.ctjs.internal.mixins.CommandNodeAccessor
 import com.chattriggers.ctjs.internal.utils.Initializer
+import com.chattriggers.ctjs.internal.utils.onExecute
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.builder.ArgumentBuilder
@@ -39,8 +40,7 @@ object CustomCommand : Initializer {
 
     internal fun registerAll(dispatcher: CommandDispatcher<CommandSource>) {
         for ((name, callback) in commands) {
-            val cmd = CommandBuilder(name).apply { callback.invoke(builder()) }
-            dispatcher.register(cmd.build())
+            dispatcher.register(buildCommand(name, callback))
         }
     }
 
@@ -64,40 +64,32 @@ object CustomCommand : Initializer {
         if (clientDispatcher?.root?.getChild(name) != null || networkDispatcher?.root?.getChild(name) != null) {
             "Command with $name already exists".printToConsole(LogType.WARN)
         } else {
-            val cmd = CommandBuilder(name).apply { callback.invoke(builder()) }
-            clientDispatcher?.register(cmd.build())
-            networkDispatcher?.register(cmd.build())
+            val cmd = buildCommand(name, callback)
+            clientDispatcher?.register(cmd)
+            networkDispatcher?.register(cmd)
         }
     }
 
-    class CommandBuilder(val name: String) {
-        private val root = LiteralArgumentBuilder.literal<CommandSource>(name)
+    private fun buildCommand(name: String, callback: (NodeBuilder) -> Any) =
+        LiteralArgumentBuilder.literal<CommandSource>(name).apply {
+            callback(NodeBuilder(this))
+        }
 
-        fun builder() = NodeBuilder(root)
-
-        fun build(): LiteralArgumentBuilder<CommandSource> = root
-    }
-
-    open class NodeBuilder(val node: ArgumentBuilder<CommandSource, *>) {
-        fun literal(s: String, callback: (NodeBuilder) -> Any): NodeBuilder {
+    class NodeBuilder(val node: ArgumentBuilder<CommandSource, *>) {
+        fun literal(s: String, callback: (NodeBuilder) -> Any) = apply {
             val next = LiteralArgumentBuilder.literal<CommandSource>(s)
-            callback.invoke(NodeBuilder(next))
+            callback(NodeBuilder(next))
             node.then(next)
-            return this
         }
 
-        fun <T> argument(name: String, type: ArgumentType<T>, callback: (NodeBuilder) -> Any): NodeBuilder {
+        fun <T> argument(name: String, type: ArgumentType<T>, callback: (NodeBuilder) -> Any) = apply {
             val next = RequiredArgumentBuilder.argument<CommandSource, T>(name, type)
-            callback.invoke(NodeBuilder(next))
+            callback(NodeBuilder(next))
             node.then(next)
-            return this
         }
 
-        fun exec(callback: (CommandContext<CommandSource>) -> Any) {
-            node.executes { ctx ->
-                callback(ctx)
-                1
-            }
+        fun exec(callback: (CommandContext<CommandSource>) -> Any) = apply {
+            node.onExecute { callback(it) }
         }
     }
 }
