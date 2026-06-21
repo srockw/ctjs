@@ -1,6 +1,6 @@
 {
+    "key.category.ctjs.main": "ChatTriggers",
     "ctjs.key.binding.console": "Console",
-    "ctjs.key.category": "ChatTriggers",
     "ctjs.ui.modules": "Modules",
     "ctjs.ui.openModulesFolder": "Open Modules Folder",
     "ctjs.ui.delete": "Delete",

@@ -64,7 +64,7 @@ object ConsoleHostProcess : Initializer {
                 "ctjs.key.binding.console",
                 InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_GRAVE_ACCENT,
-                KeyMapping.Category(Identifier.fromNamespaceAndPath("ctjs", "key.category")),
+                KeyMapping.Category(Identifier.fromNamespaceAndPath("ctjs", "main")),
             )
         )
 
