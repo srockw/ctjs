@@ -1,10 +1,7 @@
-(function(global) {
+(function (global) {
     global.Mappings = com.chattriggers.ctjs.api.Mappings;
 
     function getJavaType(clazz) {
-        const mappedName = Mappings.mapClassName(clazz);
-        if (mappedName)
-            return Packages[mappedName.replaceAll("/", ".")]
         return Packages[clazz];
     }
 
@@ -38,107 +35,19 @@
     }
 
     // API
-
-    loadClass("java.util.ArrayList");
-    loadClass("java.util.HashMap");
-    loadClass("gg.essential.universal.UKeyboard", "Keyboard");
-    loadClass("net.minecraft.util.Hand");
-
-    loadClass("com.chattriggers.ctjs.api.client.Client");
-    loadClass("com.chattriggers.ctjs.api.client.CPS");
-    loadClass("com.chattriggers.ctjs.api.client.FileLib");
-    loadClass("com.chattriggers.ctjs.api.client.KeyBind");
-    loadClass("com.chattriggers.ctjs.api.client.MathLib");
-    loadClass("com.chattriggers.ctjs.api.client.Player");
-    loadClass("com.chattriggers.ctjs.api.client.Settings");
-    loadClass("com.chattriggers.ctjs.api.client.Sound");
-
-    loadClass("com.chattriggers.ctjs.api.commands.DynamicCommands", "Commands");
-
-    loadClass("com.chattriggers.ctjs.api.entity.BlockEntity");
-    loadClass("com.chattriggers.ctjs.api.entity.Entity");
-    loadClass("com.chattriggers.ctjs.api.entity.LivingEntity");
-    loadClass("com.chattriggers.ctjs.api.entity.Particle");
-    loadClass("com.chattriggers.ctjs.api.entity.PlayerInteraction");
-    loadClass("com.chattriggers.ctjs.api.entity.PlayerMP");
-    loadClass("com.chattriggers.ctjs.api.entity.Team");
-
-    loadClass("com.chattriggers.ctjs.api.inventory.action.Action");
-    loadClass("com.chattriggers.ctjs.api.inventory.action.ClickAction");
-    loadClass("com.chattriggers.ctjs.api.inventory.action.DragAction");
-    loadClass("com.chattriggers.ctjs.api.inventory.action.DropAction");
-    loadClass("com.chattriggers.ctjs.api.inventory.action.KeyAction");
-    loadClass("com.chattriggers.ctjs.api.inventory.nbt.NBT");
-    loadClass("com.chattriggers.ctjs.api.inventory.nbt.NBTBase");
-    loadClass("com.chattriggers.ctjs.api.inventory.nbt.NBTTagCompound");
-    loadClass("com.chattriggers.ctjs.api.inventory.nbt.NBTTagList");
-    loadClass("com.chattriggers.ctjs.api.inventory.Inventory");
-    loadClass("com.chattriggers.ctjs.api.inventory.Item");
-    loadClass("com.chattriggers.ctjs.api.inventory.ItemType");
-    loadClass("com.chattriggers.ctjs.api.inventory.Slot");
-
-    loadClass("com.chattriggers.ctjs.api.message.ChatLib");
-    loadClass("com.chattriggers.ctjs.api.message.TextComponent");
-
-    loadClass("com.chattriggers.ctjs.api.render.Book");
-    loadClass("com.chattriggers.ctjs.api.render.Display");
-    loadClass("com.chattriggers.ctjs.api.render.Gui");
-    loadClass("com.chattriggers.ctjs.api.render.Image");
-    loadClass("com.chattriggers.ctjs.api.render.Rectangle");
-    loadClass("com.chattriggers.ctjs.api.render.Renderer");
-    loadClass("com.chattriggers.ctjs.api.render.Renderer3d");
-    loadClass("com.chattriggers.ctjs.api.render.Shape");
-    loadClass("com.chattriggers.ctjs.api.render.Text");
-    loadClass("com.chattriggers.ctjs.api.render.Toast");
+    loadClass("com.chattriggers.ctjs.api.FileLib");
+    loadClass("com.chattriggers.ctjs.api.CustomKeyMapping");
+    loadClass("com.chattriggers.ctjs.api.CustomCommand");
 
     // For module authors to use with custom triggers
     loadClass("com.chattriggers.ctjs.api.triggers.CancellableEvent");
 
-    loadClass("com.chattriggers.ctjs.api.vec.Vec2f");
-    loadClass("com.chattriggers.ctjs.api.vec.Vec3f");
-    loadClass("com.chattriggers.ctjs.api.vec.Vec3i");
-
-    loadClass("com.chattriggers.ctjs.api.world.block.Block");
-    loadClass("com.chattriggers.ctjs.api.world.block.BlockFace");
-    loadClass("com.chattriggers.ctjs.api.world.block.BlockPos");
-    loadClass("com.chattriggers.ctjs.api.world.block.BlockType");
-    loadClass("com.chattriggers.ctjs.api.world.BossBars");
-    loadClass("com.chattriggers.ctjs.api.world.Chunk");
-    loadClass("com.chattriggers.ctjs.api.world.PotionEffect");
-    loadClass("com.chattriggers.ctjs.api.world.PotionEffectType");
-    loadClass("com.chattriggers.ctjs.api.world.Scoreboard");
-    loadClass("com.chattriggers.ctjs.api.world.Server");
-    loadClass("com.chattriggers.ctjs.api.world.TabList");
-    loadClass("com.chattriggers.ctjs.api.world.World");
-
-    loadClass("com.chattriggers.ctjs.api.Config");
-
     // Misc
-
     loadClass("com.chattriggers.ctjs.engine.Register", "TriggerRegister");
     loadClass("com.chattriggers.ctjs.engine.WrappedThread", "Thread");
+    loadClass("com.chattriggers.ctjs.CTJS");
     global.Priority = Java.class("com.chattriggers.ctjs.api.triggers.Trigger").Priority;
-    loadClass("com.chattriggers.ctjs.CTJS", "ChatTriggers");
     global.Console = Java.type("com.chattriggers.ctjs.engine.Console").INSTANCE;
-
-    // GL
-    loadClass("org.lwjgl.opengl.GL11");
-    loadClass("org.lwjgl.opengl.GL12");
-    loadClass("org.lwjgl.opengl.GL13");
-    loadClass("org.lwjgl.opengl.GL14");
-    loadClass("org.lwjgl.opengl.GL15");
-    loadClass("org.lwjgl.opengl.GL20");
-    loadClass("org.lwjgl.opengl.GL21");
-    loadClass("org.lwjgl.opengl.GL30");
-    loadClass("org.lwjgl.opengl.GL31");
-    loadClass("org.lwjgl.opengl.GL32");
-    loadClass("org.lwjgl.opengl.GL33");
-    loadClass("org.lwjgl.opengl.GL40");
-    loadClass("org.lwjgl.opengl.GL41");
-    loadClass("org.lwjgl.opengl.GL42");
-    loadClass("org.lwjgl.opengl.GL43");
-    loadClass("org.lwjgl.opengl.GL44");
-    loadClass("org.lwjgl.opengl.GL45");
 
     global.cancel = event => {
         if (event instanceof CancellableEvent) {
@@ -153,21 +62,6 @@
     global.register = (type, method) => TriggerRegister.register(type, method);
     global.createCustomTrigger = name => TriggerRegister.createCustomTrigger(name);
 
-    // String prototypes
-    String.prototype.addFormatting = function () {
-        return ChatLib.addColor(this);
-    };
-
-    String.prototype.addColor = String.prototype.addFormatting;
-
-    String.prototype.removeFormatting = function () {
-        return ChatLib.removeFormatting(this);
-    };
-
-    String.prototype.replaceFormatting = function () {
-        return ChatLib.replaceFormatting(this);
-    };
-
     // animation
     global.easeOut = (start, finish, speed, jump = 1) => {
         if (Math.floor(Math.abs(finish - start) / jump) > 0)
@@ -177,17 +71,6 @@
 
     Number.prototype.easeOut = function (to, speed, jump) {
         return easeOut(this, to, speed, jump);
-    };
-
-    global.easeColor = (start, finish, speed, jump) => Renderer.getColor(
-        easeOut((start >> 16) & 0xFF, (finish >> 16) & 0xFF, speed, jump),
-        easeOut((start >> 8) & 0xFF, (finish >> 8) & 0xFF, speed, jump),
-        easeOut(start & 0xFF, finish & 0xFF, speed, jump),
-        easeOut((start >> 24) & 0xFF, (finish >> 24) & 0xFF, speed, jump)
-    );
-
-    Number.prototype.easeColor = function (to, speed, jump) {
-        return easeColor(this, to, speed, jump);
     };
 
     const LogType = com.chattriggers.ctjs.engine.LogType;

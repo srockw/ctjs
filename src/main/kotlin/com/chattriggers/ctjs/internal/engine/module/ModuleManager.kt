@@ -1,8 +1,6 @@
 package com.chattriggers.ctjs.internal.engine.module
 
 import com.chattriggers.ctjs.CTJS
-import com.chattriggers.ctjs.api.message.ChatLib
-import com.chattriggers.ctjs.api.world.World
 import com.chattriggers.ctjs.engine.LogType
 import com.chattriggers.ctjs.engine.printToConsole
 import com.chattriggers.ctjs.internal.engine.JSContextFactory
@@ -16,7 +14,6 @@ import java.util.*
 object ModuleManager {
     val cachedModules = mutableListOf<Module>()
     val modulesFolder = File(CTJS.MODULES_FOLDER)
-    private val pendingOldModules = mutableListOf<Module>()
 
     fun setup() {
         modulesFolder.mkdirs()
@@ -26,17 +23,8 @@ object ModuleManager {
             it.name.lowercase()
         }
 
-        // Check if those modules have updates
-        installedModules.forEach(ModuleUpdater::updateModule)
         cachedModules.addAll(installedModules)
-
-        // Import required modules
-        installedModules.distinct().forEach { module ->
-            module.metadata.requires?.forEach { ModuleUpdater.importModule(it, module.name) }
-        }
-
         sortModules()
-
         loadAssetsAndJars(cachedModules)
     }
 
@@ -47,8 +35,6 @@ object ModuleManager {
         // Normalize all metadata
         modules.forEach {
             it.metadata.entry = it.metadata.entry?.replace('/', File.separatorChar)?.replace('\\', File.separatorChar)
-            it.metadata.mixinEntry =
-                it.metadata.mixinEntry?.replace('/', File.separatorChar)?.replace('\\', File.separatorChar)
         }
 
         // Get all jars
@@ -103,25 +89,8 @@ object ModuleManager {
         return Module(directory.name, metadata, directory)
     }
 
-    data class ImportedModule(val module: Module?, val dependencies: List<Module>)
-
-    fun importModule(moduleName: String): ImportedModule {
-        val newModules = ModuleUpdater.importModule(moduleName)
-
-        loadAssetsAndJars(newModules)
-
-        newModules.forEach {
-            if (it.metadata.mixinEntry != null)
-                ChatLib.chat("&cModule ${it.name} has dynamic mixins which require a restart to take effect")
-        }
-
-        entryPass(newModules)
-
-        return ImportedModule(newModules.getOrNull(0), newModules.drop(1))
-    }
-
     fun deleteModule(name: String): Boolean {
-        val module = cachedModules.find { it.name.lowercase() == name.lowercase() } ?: return false
+        val module = cachedModules.find { it.name.equals(name, ignoreCase = true) } ?: return false
 
         val file = File(modulesFolder, module.name)
         check(file.exists()) { "Expected module to have an existing folder!" }
@@ -141,26 +110,6 @@ object ModuleManager {
         }
 
         return false
-    }
-
-    fun reportOldVersions() {
-        pendingOldModules.forEach(::reportOldVersion)
-        pendingOldModules.clear()
-    }
-
-    fun tryReportOldVersion(module: Module) {
-        if (World.isLoaded()) {
-            reportOldVersion(module)
-        } else {
-            pendingOldModules.add(module)
-        }
-    }
-
-    private fun reportOldVersion(module: Module) {
-        ChatLib.chat(
-            "&cWarning: the module \"${module.name}\" was made for an older version of CT, " +
-                "so it may not work correctly."
-        )
     }
 
     private fun loadAssets(modules: List<Module>) {

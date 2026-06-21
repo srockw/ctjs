@@ -1,18 +1,17 @@
 package com.chattriggers.ctjs.internal.console
 
 import com.chattriggers.ctjs.CTJS
-import com.chattriggers.ctjs.api.Config
-import com.chattriggers.ctjs.api.client.Client
 import com.chattriggers.ctjs.engine.LogType
-import com.chattriggers.ctjs.internal.engine.CTEvents
 import com.chattriggers.ctjs.internal.engine.JSLoader
+import com.chattriggers.ctjs.internal.listeners.ClientListener
 import com.chattriggers.ctjs.internal.utils.Initializer
-import gg.essential.universal.UDesktop
-import kotlinx.serialization.encodeToString
+import com.mojang.blaze3d.platform.InputConstants
 import kotlinx.serialization.json.Json
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
-import net.minecraft.client.option.KeyBinding
-import net.minecraft.client.util.InputUtil
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
+import net.minecraft.client.KeyMapping
+import net.minecraft.resources.Identifier
+import net.minecraft.util.Util
 import org.lwjgl.glfw.GLFW
 import java.awt.Color
 import java.io.BufferedReader
@@ -25,6 +24,7 @@ import java.net.URLDecoder
 import java.nio.charset.Charset
 import kotlin.concurrent.thread
 import kotlin.io.path.Path
+
 
 /**
  * Responsible for spawning and managing a separate Java console process (which uses AWT)
@@ -59,19 +59,20 @@ object ConsoleHostProcess : Initializer {
     }
 
     override fun init() {
-        val keybind = KeyBindingHelper.registerKeyBinding(
-            KeyBinding(
+        val keybind = KeyMappingHelper.registerKeyMapping(
+            KeyMapping(
                 "ctjs.key.binding.console",
-                InputUtil.Type.KEYSYM,
+                InputConstants.Type.KEYSYM,
                 GLFW.GLFW_KEY_GRAVE_ACCENT,
-                "ctjs.key.category",
+                KeyMapping.Category(Identifier.fromNamespaceAndPath("ctjs", "key.category")),
             )
         )
 
-        CTEvents.RENDER_GAME.register {
-            if (keybind.wasPressed())
+        ClientTickEvents.END_CLIENT_TICK.register(ClientTickEvents.EndTick {
+            while (keybind.consumeClick()) {
                 show()
-        }
+            }
+        })
     }
 
     private fun hostMain() {
@@ -81,7 +82,8 @@ object ConsoleHostProcess : Initializer {
 
         val urlObjects = (Thread.currentThread().contextClassLoader.parent as URLClassLoader).urLs
         val urls = urlObjects.joinToString(File.pathSeparator) {
-            val str = if (UDesktop.isWindows) it.toString().replace("file:/", "") else it.toString()
+            val str = if (Util.getPlatform().toString().contains("windows", true)) it.toString()
+                .replace("file:/", "") else it.toString()
             URLDecoder.decode(str, Charset.defaultCharset())
         }
 
@@ -105,7 +107,7 @@ object ConsoleHostProcess : Initializer {
 
                 val initMessage = InitMessage(
                     CTJS.MOD_VERSION,
-                    ConfigUpdateMessage.constructFromConfig(Config.ConsoleSettings.make()),
+                    ConfigUpdateMessage.constructFromDefaults(),
                     this::class.java.getResourceAsStream("/assets/ctjs/FiraCode-Regular.otf")?.readAllBytes(),
                 )
 
@@ -133,12 +135,9 @@ object ConsoleHostProcess : Initializer {
                             trySendMessage(EvalResultMessage(message.id, result))
                         }
                         is FontSizeMessage -> {
-                            val newValue = Config.consoleFontSize + message.delta
-
-                            Config.consoleFontSize = newValue.coerceIn(6..32)
-                            onConsoleSettingsChanged(Config.ConsoleSettings.make())
+                            onConsoleSettingsChanged()
                         }
-                        ReloadCTMessage -> Client.scheduleTask { CTJS.load() }
+                        ReloadCTMessage -> ClientListener.addTask(0) { CTJS.load() }
                     }
                 }
             }
@@ -172,8 +171,8 @@ object ConsoleHostProcess : Initializer {
         process.destroy()
     }
 
-    fun onConsoleSettingsChanged(settings: Config.ConsoleSettings) =
-        trySendMessage(ConfigUpdateMessage.constructFromConfig(settings))
+    fun onConsoleSettingsChanged() =
+        trySendMessage(ConfigUpdateMessage.constructFromDefaults())
 
     private fun trySendMessage(message: H2CMessage) {
         if (connected) {

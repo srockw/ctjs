@@ -1,68 +1,46 @@
 [versions]
 # Library versions
-minecraft = "1.21"
-yarn = "1.21+build.2"
+minecraft = "26.1.2"
 
-loader = "0.15.11"
-fabric-api = "0.100.3+1.21"
-fabric-kotlin = "1.11.0+kotlin.2.0.0"
+loader = "0.19.3"
+fabric-api = "0.151.0+26.1.2"
+fabric-kotlin = "1.13.9+kotlin.2.3.10"
 
-mapping-io = "0.6.1"
 rhino = "7c7c509668"
-jackson-core = "2.13.2"
-textarea = "3.2.0"
-serialization = "1.5.1"
-koffee = "315bc11234"
+jackson-core = "3.2.0"
+textarea = "3.6.3"
+serialization = "1.11.0"
 
-universalcraft = "342"
-elementa = "649"
-vigilance = "297"
-
-modmenu = "11.0.1"
-devauth = "1.2.1"
-dokka = "1.9.20"
+modmenu = "18.0.0-beta.1"
 
 # Plugin Versions
-kotlin = "2.0.0"
-loom = "1.7-SNAPSHOT"
-validator = "0.14.0"
-ksp = "2.0.0-1.0.22"
+kotlin = "2.4.0"
+loom = "1.16-SNAPSHOT"
+ksp = "2.3.9"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
-yarn = { module = "net.fabricmc:yarn", version.ref = "yarn" }
 
 fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "loader" }
 fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
 fabric-kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric-kotlin" }
 
-mapping-io = { module = "net.fabricmc:mapping-io", version.ref = "mapping-io" }
 rhino = { module = "com.github.ChatTriggers:rhino", version.ref = "rhino" }
-jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson-core" }
+jackson-core = { module = "tools.jackson.core:jackson-core", version.ref = "jackson-core" }
 textarea = { module = "com.fifesoft:rsyntaxtextarea", version.ref = "textarea" }
 serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
-koffee = { module = "com.github.ChatTriggers:koffee", version.ref = "koffee" }
-
-universalcraft = { module = "gg.essential:universalcraft-1.21-fabric", version.ref = "universalcraft" }
-elementa = { module = "gg.essential:elementa-1.18.1-fabric", version.ref = "elementa" }
-vigilance = { module = "gg.essential:vigilance-1.18.1-fabric", version.ref = "vigilance" }
 
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
-devauth = { module = "me.djtheredstoner:DevAuth-fabric", version.ref = "devauth" }
-versioning = { module = "org.jetbrains.dokka:versioning-plugin", version.ref = "dokka" }
 
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
 [bundles]
 fabric = ["fabric-loader", "fabric-api", "fabric-kotlin"]
-included = ["mapping-io", "rhino", "jackson-core", "textarea", "serialization", "koffee"]
-essential = ["universalcraft", "elementa", "vigilance"]
+included = ["rhino", "jackson-core", "textarea", "serialization"]
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-loom = { id = "fabric-loom", version.ref = "loom" }
-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "validator" }
+loom = { id = "net.fabricmc.fabric-loom", version.ref = "loom" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

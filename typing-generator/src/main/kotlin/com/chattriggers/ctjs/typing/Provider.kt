@@ -37,7 +37,7 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
     }
 
     private fun collectRoots(resolver: Resolver): Set<KSClassDeclaration> {
-        val manualRootDeclarations = manualRoots
+        val manualRootDeclarations = ManualRoots.roots
             .map(resolver::getKSNameFromString)
             .mapNotNull(resolver::getClassDeclarationByName)
             .toSet()
@@ -48,14 +48,14 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
             it.declarations.filter { decl ->
                 val qualifier = decl.packageName.asString()
                 !qualifier.startsWith("com.chattriggers.ctjs.internal") &&
-                    !qualifier.startsWith("com.chattriggers.ctjs.typing") &&
-                    decl.isPublic()
+                        !qualifier.startsWith("com.chattriggers.ctjs.typing") &&
+                        decl.isPublic()
             }
         }.filterIsInstance<KSClassDeclaration>().toSet()
     }
 
     private fun collectAllReachableClasses(decl: KSDeclaration, classes: MutableSet<KSClassDeclaration>, depth: Int) {
-        if (depth > MAX_DEPTH || decl in classes || decl is KSTypeParameter || !decl.isPublic())
+        if (depth > MAX_DEPTH || decl in classes || decl is KSTypeParameter)
             return
 
         if (decl is KSTypeAlias) {
@@ -152,7 +152,7 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
         // Note: We take a name parameter so that we can override the name of clazz. This is done for nested classes
 
         val functions = clazz.getDeclaredFunctions().filter {
-            it.isPublic()
+            it.isPublicSafe()
         }.filterNot {
             it.findOverridee() != null || it.simpleName.asString().let { name ->
                 name in excludedMethods || name in typescriptReservedWords
@@ -164,7 +164,7 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
         val functionNames = functions.map { it.simpleName.asString() }
 
         val properties = clazz.getDeclaredProperties().filter {
-            it.isPublic()
+            it.isPublicSafe()
         }.filterNot {
             it.simpleName.asString() in functionNames || it.findOverridee() != null
         }.toList()
@@ -173,11 +173,12 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
         val (staticProperties, instanceProperties) = properties.partition { it.isStatic() }
         val isEnum = clazz.classKind == ClassKind.ENUM_CLASS
 
-        val nestedClasses = clazz.declarations.filterIsInstance<KSClassDeclaration>().filter {
-            it.isPublic()
-        }.filter {
-            it.classKind == ClassKind.ENUM_CLASS || it.classKind == ClassKind.CLASS
-        }.toList()
+        val nestedClasses = clazz.declarations
+            .filterIsInstance<KSClassDeclaration>()
+            .filter {
+                it.isPublicSafe() && (it.classKind == ClassKind.ENUM_CLASS || it.classKind == ClassKind.CLASS)
+            }
+            .toList()
 
         // Output static object first, if necessary
         if (staticProperties.isNotEmpty() || staticFunctions.isNotEmpty() || nestedClasses.isNotEmpty() || isEnum) {
@@ -486,12 +487,20 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
         }
 
     fun KSPropertyDeclaration.isStatic() = Modifier.JAVA_STATIC in modifiers ||
-        isAnnotationPresent(JvmStatic::class) ||
-        isAnnotationPresent(JvmField::class)
+            isAnnotationPresent(JvmStatic::class) ||
+            isAnnotationPresent(JvmField::class)
 
     fun KSFunctionDeclaration.isStatic() = Modifier.JAVA_STATIC in modifiers ||
-        isAnnotationPresent(JvmStatic::class) ||
-        isConstructor()
+            isAnnotationPresent(JvmStatic::class) ||
+            isConstructor()
+
+    private fun KSDeclaration.isPublicSafe(): Boolean {
+        return try {
+            isPublic() || Modifier.PUBLIC in modifiers
+        } catch (e: Exception) {
+            false
+        }
+    }
 
     private class Package(val parent: Package?, val name: String) {
         val subpackages = mutableMapOf<String, Package>()

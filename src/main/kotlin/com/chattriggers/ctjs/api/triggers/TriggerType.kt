@@ -1,6 +1,8 @@
 package com.chattriggers.ctjs.api.triggers
 
 import com.chattriggers.ctjs.internal.engine.JSLoader
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 
 sealed interface ITriggerType {
     val name: String
@@ -11,52 +13,23 @@ sealed interface ITriggerType {
 }
 
 enum class TriggerType : ITriggerType {
-    // client
+    RENDER_OVERLAY,
+    RENDER_LEVEL_EXTRACTION,
+
     CHAT,
     ACTION_BAR,
-    TICK,
-    STEP,
-    GAME_UNLOAD,
-    GAME_LOAD,
-    CLICKED,
-    SCROLLED,
-    DRAGGED,
-    GUI_OPENED,
     MESSAGE_SENT,
-    ITEM_TOOLTIP,
-    PLAYER_INTERACT,
-    GUI_KEY,
-    GUI_MOUSE_CLICK,
-    GUI_MOUSE_DRAG,
-    PACKET_SENT,
-    PACKET_RECEIVED,
-    SERVER_CONNECT,
-    SERVER_DISCONNECT,
-    GUI_CLOSED,
-    DROP_ITEM,
 
-    // rendering
-    PRE_RENDER_WORLD,
-    POST_RENDER_WORLD,
-    BLOCK_HIGHLIGHT,
-    RENDER_OVERLAY,
-    RENDER_PLAYER_LIST,
-    RENDER_ENTITY,
-    RENDER_BLOCK_ENTITY,
-    GUI_RENDER,
-    POST_GUI_RENDER,
+    TICK,
+}
 
-    // world
-    SOUND_PLAY,
-    WORLD_LOAD,
-    WORLD_UNLOAD,
-    SPAWN_PARTICLE,
-    ENTITY_DEATH,
-    ENTITY_DAMAGE,
-
-    // misc
-    COMMAND,
-    OTHER
+enum class RenderContextTriggerType(val register: ((LevelRenderContext) -> Unit) -> Unit) : ITriggerType {
+    END_MAIN({ LevelRenderEvents.END_MAIN.register(it) }),
+    BEFORE_GIZMOS({ LevelRenderEvents.BEFORE_GIZMOS.register(it) }),
+    AFTER_TRANSLUCENT_TERRAIN({ LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(it) }),
+    AFTER_SOLID_FEATURES({ LevelRenderEvents.AFTER_SOLID_FEATURES.register(it) }),
+    AFTER_TRANSLUCENT_FEATURES({ LevelRenderEvents.AFTER_TRANSLUCENT_FEATURES.register(it) }),
+    BEFORE_TRANSLUCENT_TERRAIN({ LevelRenderEvents.BEFORE_TRANSLUCENT_TERRAIN.register(it) }),
 }
 
 data class CustomTriggerType(override val name: String) : ITriggerType
