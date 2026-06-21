@@ -9,18 +9,15 @@ import net.minecraft.resources.Identifier
 object CustomKeyMapping {
     private val saveFile = CTJS.configLocation.resolve("ctjs_key_mappings.txt")
     private val keyMap: HashMap<String, String> = HashMap()
+    private val categoryRegex = Regex("[a-zA-Z0-9-_\\s]+")
     private val customKeyMappings: MutableList<KeyMapping> = mutableListOf()
-    private val customCategories: MutableList<KeyMapping.Category> = mutableListOf()
+    private val customCategories: MutableMap<KeyMapping.Category, String> = mutableMapOf()
 
     @JvmStatic
     fun register(key: String, keyCode: Int, category: KeyMapping.Category): KeyMapping {
         val customKeyMapping = customKeyMappings.find { it.name == key }
         if (customKeyMapping != null) {
             return customKeyMapping.load()
-        }
-
-        if (!customCategories.contains(category)) {
-            customCategories.add(category)
         }
 
         val keyMapping = KeyMapping(key, InputConstants.Type.KEYSYM, keyCode, category).load()
@@ -30,17 +27,18 @@ object CustomKeyMapping {
     }
 
     @JvmStatic
-    fun register(key: String, keyCode: Int, category: String): KeyMapping {
-        val cat = customCategories.find { it.id.path == category }.let {
-            if (it == null) {
-                val parts = category.split(":", limit = 2)
-                val namespace = if (parts.size > 1) parts[0] else "ctjs"
-                val path = if (parts.size > 1) parts[1] else parts[0]
-                KeyMapping.Category(Identifier.fromNamespaceAndPath(namespace, path))
-            } else it
+    fun register(key: String, keyCode: Int, categoryName: String): KeyMapping {
+        if (!categoryName.matches(categoryRegex)) {
+            error("$categoryName should only contain alphanumeric characters, whitespaces, underscores or dashes")
         }
 
-        return register(key, keyCode, cat)
+        val path = categoryName.lowercase().replace(Regex("\\s"), "_")
+        val id = Identifier.fromNamespaceAndPath("ctjs", path)
+        
+        val category = customCategories.keys.find { it.id == id } ?: KeyMapping.Category(id)
+        customCategories.putIfAbsent(category, categoryName)
+
+        return register(key, keyCode, category)
     }
 
     @JvmStatic
@@ -55,7 +53,7 @@ object CustomKeyMapping {
     fun getKeyMappings() = customKeyMappings.toList()
 
     @JvmStatic
-    fun getCategories() = customCategories.toList()
+    fun getCategories() = customCategories.toMap()
 
     fun save() {
         val builder = StringBuilder()
