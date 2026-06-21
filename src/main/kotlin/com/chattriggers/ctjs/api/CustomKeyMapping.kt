@@ -7,8 +7,8 @@ import net.minecraft.client.Minecraft
 import net.minecraft.resources.Identifier
 
 object CustomKeyMapping {
-    private val SAVE_FILE = CTJS.configLocation.resolve("ctjs_key_mappings.txt")
-    private val KEY_MAP: HashMap<String, String> = HashMap()
+    private val saveFile = CTJS.configLocation.resolve("ctjs_key_mappings.txt")
+    private val keyMap: HashMap<String, String> = HashMap()
     private val customKeyMappings: MutableList<KeyMapping> = mutableListOf()
     private val customCategories: MutableList<KeyMapping.Category> = mutableListOf()
 
@@ -25,6 +25,7 @@ object CustomKeyMapping {
 
         val keyMapping = KeyMapping(key, InputConstants.Type.KEYSYM, keyCode, category).load()
         customKeyMappings.add(keyMapping)
+
         return keyMapping
     }
 
@@ -47,10 +48,7 @@ object CustomKeyMapping {
         val vanilla = Minecraft.getInstance().options.keyMappings.find { it.name == key }
         if (vanilla != null) return vanilla
 
-        val custom = customKeyMappings.find { it.name == key }
-        if (custom != null) return custom
-
-        return null
+        return customKeyMappings.find { it.name == key }
     }
 
     @JvmStatic
@@ -64,21 +62,21 @@ object CustomKeyMapping {
         for (key in customKeyMappings) {
             builder.appendLine("${key.name}:${key.saveString()}")
         }
-        SAVE_FILE.writeText(builder.toString())
+        saveFile.writeText(builder.toString())
     }
 
     fun load() {
-        if (!SAVE_FILE.exists()) return
+        if (!saveFile.exists()) return
 
-        SAVE_FILE.readText().lines().forEach { line ->
+        saveFile.readText().lines().forEach { line ->
             val parts = line.split(":", limit = 2)
             if (parts.size < 2) return@forEach
-            KEY_MAP[parts[0]] = parts[1]
+            keyMap[parts[0]] = parts[1]
         }
     }
 
     private fun KeyMapping.load() = apply {
-        KEY_MAP[name]?.let {
+        keyMap[name]?.let {
             setKey(InputConstants.getKey(it))
             KeyMapping.resetMapping()
         }
