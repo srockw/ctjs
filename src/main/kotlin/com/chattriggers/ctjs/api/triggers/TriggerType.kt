@@ -18,6 +18,7 @@ enum class TriggerType(val create: ((method: Any) -> Trigger)? = null) : ITrigge
     RENDER_SCREEN,
 
     SCREEN_KEY_PRESSED,
+    SCREEN_MOUSE_CLICKED,
 
     CHAT,
     ACTION_BAR,

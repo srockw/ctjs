@@ -4,6 +4,7 @@ import com.chattriggers.ctjs.api.triggers.TriggerType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,6 +15,12 @@ public interface ContainerEventHandlerMixin {
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
     private void onKeyPressed(KeyEvent event, CallbackInfoReturnable<Boolean> cir) {
         TriggerType.SCREEN_KEY_PRESSED.triggerAll(Minecraft.getInstance().screen, event, cir);
+        if (cir.isCancelled()) cir.setReturnValue(true);
+    }
+
+    @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
+    private void onMouseClicked(MouseButtonEvent event, boolean doubleClick, CallbackInfoReturnable<Boolean> cir) {
+        TriggerType.SCREEN_MOUSE_CLICKED.triggerAll(Minecraft.getInstance().screen, event, doubleClick, cir);
         if (cir.isCancelled()) cir.setReturnValue(true);
     }
 }
