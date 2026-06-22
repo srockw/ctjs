@@ -23,6 +23,8 @@ val prologue = """
     
     interface RegisterTypes {
         renderOverlay(ctx: net.minecraft.client.gui.GuiGraphicsExtractor, tickCounter: net.minecraft.client.DeltaTracker);
+        renderScreen(screen: net.minecraft.client.gui.screens.Screen, ctx: net.minecraft.client.gui.GuiGraphicsExtractor, mouseX: number, mouseY: number, a: number);
+        
         chat(message: net.minecraft.network.chat.Component, event: CancellableEvent);
         actionBar(message: net.minecraft.network.chat.Component, event: CancellableEvent);
         messageSent(message: string, isCommand: boolean, event: CancellableEvent);

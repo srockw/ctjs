@@ -71,6 +71,8 @@ object ManualRoots {
         "net.minecraft.commands.arguments.TemplateRotationArgument",
         "net.minecraft.commands.arguments.ObjectiveCriteriaArgument",
         "net.minecraft.commands.arguments.StringRepresentableArgument",
+        "net.minecraft.client.gui.screens.Screen",
+        "net.minecraft.client.gui.screens.inventory.AbstractContainerScreen",
     )
 
     private fun collectClasses(url: String) {

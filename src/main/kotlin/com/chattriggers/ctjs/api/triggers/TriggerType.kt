@@ -15,6 +15,7 @@ sealed interface ITriggerType {
 enum class TriggerType(val create: ((method: Any) -> Trigger)? = null) : ITriggerType {
     RENDER_OVERLAY,
     RENDER_LEVEL_EXTRACTION,
+    RENDER_SCREEN,
 
     CHAT,
     ACTION_BAR,
