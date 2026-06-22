@@ -4,6 +4,7 @@ private val providedTypes = mutableMapOf(
     "FileLib" to "com.chattriggers.ctjs.api.FileLib",
     "CustomKeyMapping" to "com.chattriggers.ctjs.api.CustomKeyMapping",
     "CustomCommand" to "com.chattriggers.ctjs.api.CustomCommand",
+    "CustomScreen" to "com.chattriggers.ctjs.api.CustomScreen",
     "CancellableEvent" to "com.chattriggers.ctjs.api.triggers.CancellableEvent",
     "TriggerRegister" to "com.chattriggers.ctjs.engine.Register",
     "Thread" to "com.chattriggers.ctjs.engine.WrappedThread",

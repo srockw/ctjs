@@ -38,6 +38,7 @@
     loadClass("com.chattriggers.ctjs.api.FileLib");
     loadClass("com.chattriggers.ctjs.api.CustomKeyMapping");
     loadClass("com.chattriggers.ctjs.api.CustomCommand");
+    loadClass("com.chattriggers.ctjs.api.CustomScreen");
 
     // For module authors to use with custom triggers
     loadClass("com.chattriggers.ctjs.api.triggers.CancellableEvent");
