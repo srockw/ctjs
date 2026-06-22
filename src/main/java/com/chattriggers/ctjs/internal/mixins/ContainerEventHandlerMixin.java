@@ -23,4 +23,16 @@ public interface ContainerEventHandlerMixin {
         TriggerType.SCREEN_MOUSE_CLICKED.triggerAll(Minecraft.getInstance().screen, event, doubleClick, cir);
         if (cir.isCancelled()) cir.setReturnValue(true);
     }
+
+    @Inject(method = "mouseDragged", at = @At("HEAD"), cancellable = true)
+    private void onMouseDrag(MouseButtonEvent event, double dx, double dy, CallbackInfoReturnable<Boolean> cir) {
+        TriggerType.SCREEN_DRAGGED.triggerAll(Minecraft.getInstance().screen, event, dx, dy, cir);
+        if (cir.isCancelled()) cir.setReturnValue(true);
+    }
+
+    @Inject(method = "mouseScrolled", at = @At("HEAD"), cancellable = true)
+    private void onMouseScroll(double x, double y, double scrollX, double scrollY, CallbackInfoReturnable<Boolean> cir) {
+        TriggerType.SCREEN_SCROLLED.triggerAll(Minecraft.getInstance().screen, x, y, scrollX, scrollY, cir);
+        if (cir.isCancelled()) cir.setReturnValue(true);
+    }
 }

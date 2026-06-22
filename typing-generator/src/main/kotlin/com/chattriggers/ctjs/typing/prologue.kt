@@ -27,6 +27,8 @@ val prologue = """
         
         screenKeyPressed(screen: net.minecraft.client.gui.screens.Screen, keyEvent: net.minecraft.client.input.KeyEvent, event: org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable);
         screenMouseClicked(screen: net.minecraft.client.gui.screens.Screen, mouseEvent: net.minecraft.client.input.MouseButtonEvent, doubleClick: boolean, event: org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable);
+        screenDragged(screen: net.minecraft.client.gui.screens.Screen, mouseEvent: net.minecraft.client.input.MouseButtonEvent, dx: number, dy: number, event: org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable);
+        screenScrolled(screen: net.minecraft.client.gui.screens.Screen, mouseX: number, mouseY: number, scrollX: number, scrollY: number, event: org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable);
         
         chat(message: net.minecraft.network.chat.Component, event: CancellableEvent);
         actionBar(message: net.minecraft.network.chat.Component, event: CancellableEvent);
