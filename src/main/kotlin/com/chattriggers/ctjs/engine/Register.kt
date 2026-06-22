@@ -31,7 +31,11 @@ object Register {
     fun register(triggerType: String, method: Any): Trigger {
         val type = triggerType.lowercase()
 
-        methodMap[type]?.let { return RegularTrigger(method, it) }
+        methodMap[type]?.let {
+            return if (it is TriggerType && it.create != null) {
+                it.create(method)
+            } else RegularTrigger(method, it)
+        }
 
         val customType = CustomTriggerType(type)
         if (customType in customTriggers)

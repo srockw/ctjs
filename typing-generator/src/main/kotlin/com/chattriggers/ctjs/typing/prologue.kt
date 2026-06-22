@@ -26,6 +26,7 @@ val prologue = """
         chat(message: net.minecraft.network.chat.Component, event: CancellableEvent);
         actionBar(message: net.minecraft.network.chat.Component, event: CancellableEvent);
         messageSent(message: string, isCommand: boolean, event: CancellableEvent);
+        step(advanceGameTime: boolean): com.chattriggers.ctjs.api.triggers.StepTrigger;
         tick();
         
         renderLevelExtraction(ctx: net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext)

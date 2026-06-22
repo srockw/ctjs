@@ -12,7 +12,7 @@ sealed interface ITriggerType {
     }
 }
 
-enum class TriggerType : ITriggerType {
+enum class TriggerType(val create: ((method: Any) -> Trigger)? = null) : ITriggerType {
     RENDER_OVERLAY,
     RENDER_LEVEL_EXTRACTION,
 
@@ -21,6 +21,7 @@ enum class TriggerType : ITriggerType {
     MESSAGE_SENT,
 
     TICK,
+    STEP({ StepTrigger(it) }),
 }
 
 enum class RenderContextTriggerType(val register: ((LevelRenderContext) -> Unit) -> Unit) : ITriggerType {
