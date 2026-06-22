@@ -11,6 +11,7 @@ object ManualRoots {
         "java.util.HashMap",
         "org.lwjgl.glfw.GLFW",
         "org.spongepowered.asm.mixin.injection.callback.CallbackInfo",
+        "org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable",
         "net.minecraft.client.Minecraft",
         "net.minecraft.util.ARGB",
         "net.minecraft.client.renderer.ShapeRenderer",
