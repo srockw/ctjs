@@ -38,6 +38,8 @@ val prologue = """
         tick();
         
         packetReceived(packet: net.minecraft.network.protocol.Packet<any>, event: org.spongepowered.asm.mixin.injection.callback.CallbackInfo);
+        serverConnect();
+        serverDisconnect();
         
         renderLevelExtraction(ctx: net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext)
         renderEndMain(ctx: net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext);

@@ -27,6 +27,9 @@ enum class TriggerType(val create: ((method: Any) -> Trigger)? = null) : ITrigge
     MESSAGE_SENT,
     PACKET_RECEIVED,
 
+    SERVER_CONNECT,
+    SERVER_DISCONNECT,
+
     TICK,
     STEP({ StepTrigger(it) }),
 }

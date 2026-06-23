@@ -7,6 +7,7 @@ import com.chattriggers.ctjs.internal.utils.Initializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents
 import net.minecraft.client.Minecraft
@@ -79,6 +80,14 @@ object ClientListener : Initializer {
             entry.register { ctx ->
                 entry.triggerAll(ctx)
             }
+        }
+
+        ClientPlayConnectionEvents.JOIN.register { _, _, _ ->
+            TriggerType.SERVER_CONNECT.triggerAll()
+        }
+
+        ClientPlayConnectionEvents.DISCONNECT.register { _, _ ->
+            TriggerType.SERVER_DISCONNECT.triggerAll()
         }
     }
 
