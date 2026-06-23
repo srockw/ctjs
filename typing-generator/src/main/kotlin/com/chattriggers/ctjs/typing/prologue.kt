@@ -37,6 +37,8 @@ val prologue = """
         step(advanceGameTime: boolean): com.chattriggers.ctjs.api.triggers.StepTrigger;
         tick();
         
+        packetReceived(packet: net.minecraft.network.protocol.Packet<any>, event: org.spongepowered.asm.mixin.injection.callback.CallbackInfo);
+        
         renderLevelExtraction(ctx: net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext)
         renderEndMain(ctx: net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext);
         renderBeforeGizmos(ctx: net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext);

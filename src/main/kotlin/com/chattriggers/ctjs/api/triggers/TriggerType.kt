@@ -25,6 +25,7 @@ enum class TriggerType(val create: ((method: Any) -> Trigger)? = null) : ITrigge
     CHAT,
     ACTION_BAR,
     MESSAGE_SENT,
+    PACKET_RECEIVED,
 
     TICK,
     STEP({ StepTrigger(it) }),
